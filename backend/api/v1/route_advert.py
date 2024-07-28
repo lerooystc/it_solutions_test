@@ -1,22 +1,28 @@
-from db.repository.advert import retrieve_advert, create_new_advert
-from db import User
 from api.v1.route_login import get_current_user
-from schemas.advert import ShowAdvert, CreateAdvert
+from db import User
+from db.repository.advert import create_new_advert
+from db.repository.advert import retrieve_advert
 from db.session import get_db
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter
+from fastapi import Depends
 from fastapi import HTTPException
 from fastapi import status
+from schemas.advert import CreateAdvert
+from schemas.advert import ShowAdvert
 from sqlalchemy.orm import Session
 
 
 router = APIRouter()
 
-@router.get(
-    "/adverts/{id}", response_model=ShowAdvert, status_code=status.HTTP_200_OK
-)
-async def get_advert(id: int, db: Session = Depends(get_db), current_user: User=Depends(get_current_user)):
+
+@router.get("/adverts/{id}", response_model=ShowAdvert, status_code=status.HTTP_200_OK)
+async def get_advert(
+    id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
     advert = retrieve_advert(id=id, db=db, user=current_user.id)
-    if isinstance(advert,dict):
+    if isinstance(advert, dict):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail=advert.get("error")
         )

@@ -14,6 +14,6 @@ class ShowAdvert(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     title: str = Field(..., min_length=30)
-    author: str 
+    author: str
     viewcount: int
     position: int
